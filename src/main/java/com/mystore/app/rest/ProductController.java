@@ -28,6 +28,16 @@ public class ProductController {
     public List<Product> getAllProducts() {
         return productService.getAllProducts();
     }
+    @GetMapping("/filter/page")
+    public ResponseEntity<Page<Product>> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int pageSize,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        
+        Page<Product> products = productService.getAllProducts(page, pageSize, sortBy, sortDir);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
 
 
     @GetMapping("/{id}")
@@ -56,16 +66,32 @@ public class ProductController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
-    // TODO: API to search products by name
+    @GetMapping("/search")
+    public ResponseEntity<List<Product>> searchProductsByName(@RequestParam("name") String name) {
+        List<Product> products = productService.searchProductsByName(name);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    @GetMapping("/filter/category")
+    public ResponseEntity<List<Product>> filterProductsByCategory(@RequestParam("category") String category) {
+        List<Product> products = productService.filterProductsByCategory(category);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
 
 
-    // TODO: API to filter products by category
+    @GetMapping("/filter/price")
+    public ResponseEntity<List<Product>> filterProductsByPriceRange(@RequestParam("minPrice") double minPrice,
+                                                                    @RequestParam("maxPrice") double maxPrice) {
+        List<Product> products = productService.filterProductsByPriceRange(minPrice, maxPrice);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
 
 
-    // TODO: API to filter products by price range
-
-
-    // TODO: API to filter products by stock quantity range
-
+    @GetMapping("/filter/stock")
+    public ResponseEntity<List<Product>> filterProductsByStockQuantity(@RequestParam("minStock") int minStock,
+                                                                       @RequestParam("maxStock") int maxStock) {
+        List<Product> products = productService.filterProductsByStockQuantity(minStock, maxStock);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
 
 }

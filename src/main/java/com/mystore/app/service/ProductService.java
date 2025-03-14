@@ -22,6 +22,12 @@ public class ProductService {
         return product;
     }
 
+    public Page<Product> getAllProducts(int page, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        return productRepository.findAll(pageable);
+    }
+
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
@@ -49,16 +55,21 @@ public class ProductService {
         return "Product Deleted Successfully";
     }
 
-    // TODO: Method to search products by name
+    public List<Product> searchProductsByName(String name) {
+        return productRepository.findByNameContainingIgnoreCase(name);
+    }
 
+    public List<Product> filterProductsByCategory(String category) {
+        return productRepository.findByCategoryIgnoreCase(category);
+    }
 
-    // TODO: Method to filter products by category
+    public List<Product> filterProductsByPriceRange(double minPrice, double maxPrice) {
+        return productRepository.findByPriceBetween(minPrice, maxPrice);
+    }
 
-
-    // TODO: Method to filter products by price range
-
-
-    // TODO: Method to filter products by stock quantity range
+    public List<Product> filterProductsByStockQuantity(int minStock, int maxStock) {
+        return productRepository.findByStockQuantityBetween(minStock, maxStock);
+    }
 
 
 }
